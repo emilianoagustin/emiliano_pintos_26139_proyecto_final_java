@@ -1,30 +1,28 @@
 package com.techlab.productcrud.controller;
 
 import com.techlab.productcrud.entity.Category;
-import com.techlab.productcrud.repository.CategoryRepository;
+import com.techlab.productcrud.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
-  private final CategoryRepository categoryRepository;
+  private final CategoryService categoryService;
 
-  public CategoryController(CategoryRepository categoryRepository) {
-    this.categoryRepository = categoryRepository;
+  public CategoryController(CategoryService categoryService) {
+    this.categoryService = categoryService;
   }
 
   @PostMapping
   public Category createCategory(@RequestBody Category category) {
-      return categoryRepository.save(category);
+      return categoryService.createCategory(category);
   }
 
   @GetMapping
   public List<Category> getAllCategories() {
-    return categoryRepository.findAll();
+    return categoryService.getAllCategories();
   }
 }
