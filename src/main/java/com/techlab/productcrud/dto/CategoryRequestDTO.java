@@ -1,25 +1,16 @@
-package com.techlab.productcrud.entity;
+package com.techlab.productcrud.dto;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "categories")
-public class Category {
+public class CategoryRequestDTO {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
+  @NotBlank(message = "Category name is required")
   private String name;
 
+  @NotBlank(message = "Category description is required")
   private String description;
 
-  public Category() {
-  }
-
-  public Long getId() {
-    return this.id;
-  }
+  public CategoryRequestDTO(){}
 
   public String getName() {
     return this.name;

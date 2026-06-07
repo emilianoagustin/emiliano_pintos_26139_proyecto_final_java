@@ -2,6 +2,8 @@ package com.techlab.productcrud.controller;
 
 import com.techlab.productcrud.entity.Category;
 import com.techlab.productcrud.service.CategoryService;
+import com.techlab.productcrud.dto.CategoryRequestDTO;
+import com.techlab.productcrud.dto.CategoryResponseDTO;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -17,8 +19,8 @@ public class CategoryController {
   }
 
   @PostMapping
-  public Category createCategory(@Valid @RequestBody Category category) {
-      return categoryService.createCategory(category);
+  public CategoryResponseDTO createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+      return categoryService.createCategory(categoryRequestDTO);
   }
 
   @GetMapping
@@ -27,7 +29,7 @@ public class CategoryController {
   }
 
   @GetMapping("/{id}")
-  public Category getCategory(@PathVariable Long id) {
+  public CategoryResponseDTO getCategory(@PathVariable Long id) {
       return categoryService.getCategory(id);
   }
   
