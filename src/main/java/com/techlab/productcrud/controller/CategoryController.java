@@ -2,10 +2,12 @@ package com.techlab.productcrud.controller;
 
 import com.techlab.productcrud.entity.Category;
 import com.techlab.productcrud.service.CategoryService;
+import com.techlab.productcrud.dto.CategoryRequestDTO;
+import com.techlab.productcrud.dto.CategoryResponseDTO;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/categories")
@@ -17,12 +19,28 @@ public class CategoryController {
   }
 
   @PostMapping
-  public Category createCategory(@RequestBody Category category) {
-      return categoryService.createCategory(category);
+  public CategoryResponseDTO createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+    return categoryService.createCategory(categoryRequestDTO);
   }
 
   @GetMapping
-  public List<Category> getAllCategories() {
+  public List<CategoryResponseDTO> getAllCategories() {
     return categoryService.getAllCategories();
   }
+
+  @GetMapping("/{id}")
+  public CategoryResponseDTO getCategory(@PathVariable Long id) {
+    return categoryService.getCategory(id);
+  }
+
+  @PutMapping("/{id}")
+  public CategoryResponseDTO updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+    return categoryService.updateCategory(id, categoryRequestDTO);
+  }
+
+  @DeleteMapping("/{id}")
+  public CategoryResponseDTO deleteCategory(@PathVariable Long id){
+    return categoryService.deleteCategory(id);
+  }
+
 }
