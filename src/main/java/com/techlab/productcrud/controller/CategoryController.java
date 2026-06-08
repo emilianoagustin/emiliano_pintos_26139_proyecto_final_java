@@ -20,17 +20,27 @@ public class CategoryController {
 
   @PostMapping
   public CategoryResponseDTO createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
-      return categoryService.createCategory(categoryRequestDTO);
+    return categoryService.createCategory(categoryRequestDTO);
   }
 
   @GetMapping
-  public List<Category> getAllCategories() {
+  public List<CategoryResponseDTO> getAllCategories() {
     return categoryService.getAllCategories();
   }
 
   @GetMapping("/{id}")
   public CategoryResponseDTO getCategory(@PathVariable Long id) {
-      return categoryService.getCategory(id);
+    return categoryService.getCategory(id);
   }
-  
+
+  @PutMapping("/{id}")
+  public CategoryResponseDTO updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+    return categoryService.updateCategory(id, categoryRequestDTO);
+  }
+
+  @DeleteMapping("/{id}")
+  public CategoryResponseDTO deleteCategory(@PathVariable Long id){
+    return categoryService.deleteCategory(id);
+  }
+
 }

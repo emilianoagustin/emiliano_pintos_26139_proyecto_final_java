@@ -18,24 +18,51 @@ public class CategoryService {
     this.categoryRepository = categoryRepository;
   }
 
-  public CategoryResponseDTO createCategory(CategoryRequestDTO categoryRequestDTO) {
-    
+  private CategoryResponseDTO mapToResponseDTO(Category category) {
+    return new CategoryResponseDTO(category.getId(), category.getName(), category.getDescription());
+  }
+
+  private Category mapToEntity(CategoryRequestDTO categoryRequestDTO) {
     Category category = new Category();
     category.setName(categoryRequestDTO.getName());
     category.setDescription(categoryRequestDTO.getDescription());
 
-    Category savedCategory = categoryRepository.save(category);
-
-    return new CategoryResponseDTO(savedCategory.getId(), savedCategory.getName(), savedCategory.getDescription());
+    return category;
   }
 
-  public List<Category> getAllCategories() {
-    return categoryRepository.findAll();
+  // CRUD METHODS //
+
+  public CategoryResponseDTO createCategory(CategoryRequestDTO categoryRequestDTO) {
+    Category savedCategory = categoryRepository.save(mapToEntity(categoryRequestDTO));
+
+    return mapToResponseDTO(savedCategory);
+  }
+
+  public List<CategoryResponseDTO> getAllCategories() {
+    List<Category> categoryList = categoryRepository.findAll();
+
+    List<CategoryResponseDTO> categoryResponseDTOList = categoryList.stream().map(this::mapToResponseDTO).toList();
+    return categoryResponseDTOList;
   }
 
   public CategoryResponseDTO getCategory(Long id) {
     Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+    
+    return mapToResponseDTO(category);
+  }
+  
+  public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO categoryRequestDTO) {
+    Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+    category.setName(categoryRequestDTO.getName());
+    category.setDescription(categoryRequestDTO.getDescription());
+    
+    return mapToResponseDTO(categoryRepository.save(category));
+  }
+  
+  public CategoryResponseDTO deleteCategory(Long id) {
+    Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+    categoryRepository.delete(category);
 
-    return new CategoryResponseDTO(category.getId(), category.getName(), category.getDescription());
+    return mapToResponseDTO(category);
   }
 }
