@@ -2,6 +2,8 @@ package com.techlab.productcrud.entity;
 
 import jakarta.persistence.*;
 
+import java.lang.Double;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -12,7 +14,7 @@ public class Product {
 
   private String name;
   private String description;
-  private double price;
+  private Double price;
 
   @ManyToOne
   @JoinColumn(name = "category_id")
@@ -40,11 +42,11 @@ public class Product {
     this.description = description;
   }
 
-  public double getPrice() {
+  public Double getPrice() {
     return this.price;
   }
 
-  public void setPrice(double price) {
+  public void setPrice(Double price) {
     this.price = price;
   }
 
