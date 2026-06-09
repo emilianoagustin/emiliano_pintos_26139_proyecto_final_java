@@ -1,0 +1,66 @@
+package com.techlab.productcrud.service;
+
+import com.techlab.productcrud.entity.Category;
+import com.techlab.productcrud.entity.Product;
+import com.techlab.productcrud.repository.CategoryRepository;
+import com.techlab.productcrud.repository.ProductRepository;
+import com.techlab.productcrud.exception.ResourceNotFoundException;
+import com.techlab.productcrud.dto.ProductRequestDTO;
+import com.techlab.productcrud.dto.ProductResponseDTO;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductService {
+  private final ProductRepository productRepository;
+  private final CategoryRepository categoryRepository;
+
+  public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    this.productRepository = productRepository;
+    this.categoryRepository = categoryRepository;
+  }
+
+  private ProductResponseDTO mapToResponseDTO(Product product) {
+    return new ProductResponseDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getCategory().getId(), product.getCategory().getName());
+  }
+
+  private Product mapToEntity(ProductRequestDTO productRequestDTO) {
+    Product product = new Product();
+    product.setName(productRequestDTO.getName());
+    product.setDescription(productRequestDTO.getDescription());
+    product.setPrice(productRequestDTO.getPrice());
+
+    Long categoryId = productRequestDTO.getCategoryId();
+    Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + categoryId)
+    );
+    product.setCategory(category);
+
+    return product;
+  }
+
+  // CRUD METHODS //
+
+  public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
+    Product savedProduct = productRepository.save(mapToEntity(productRequestDTO));
+
+    return mapToResponseDTO(savedProduct);
+  }
+
+  public List<ProductResponseDTO> getAllProducts() {
+
+  }
+
+  public ProductResponseDTO getProduct(Long id) {
+
+  }
+
+  public ProductResponseDTO updateProduct(ProductRequestDTO productRequestDTO) {
+
+  }
+
+  public ProductResponseDTO deleteProduct(Long id) {
+
+  }
+}
