@@ -70,6 +70,12 @@ public class CategoryService {
     
     return mapToResponseDTO(category);
   }
+
+  public CategoryDetailResponseDTO getCategoryDetails(Long id) {
+    Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+    
+    return mapToCategoryDetailResponseDTO(category);
+  }
   
   public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO categoryRequestDTO) {
     Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
