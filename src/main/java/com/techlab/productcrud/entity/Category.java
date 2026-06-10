@@ -1,6 +1,7 @@
 package com.techlab.productcrud.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
@@ -13,6 +14,9 @@ public class Category {
   private String name;
 
   private String description;
+
+  @OneToMany(mappedBy = "category")
+  private List<Product> products;
 
   public Category() {
   }
