@@ -21,7 +21,8 @@ public class ProductRequestDTO {
   @Digits(integer = 7, fraction = 2, message = "Price format must match up to 7 digits and 2 decimals")
   @Positive(message = "Price has to be a positive number")
   private Double price;
-
+  
+  @NotNull(message = "Category ID cannot be empty")
   private Long categoryId;
 
   public ProductRequestDTO(){}
