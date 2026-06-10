@@ -40,4 +40,8 @@ public class Category {
   public void setDescription(String description) {
     this.description = description;
   }
+
+  public List<Product> getProducts() {
+    return this.products;
+  }
 }
