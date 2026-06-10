@@ -1,6 +1,5 @@
 package com.techlab.productcrud.controller;
 
-import com.techlab.productcrud.entity.Category;
 import com.techlab.productcrud.service.CategoryService;
 import com.techlab.productcrud.dto.CategoryRequestDTO;
 import com.techlab.productcrud.dto.CategoryResponseDTO;
