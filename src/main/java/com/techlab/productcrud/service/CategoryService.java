@@ -1,10 +1,14 @@
 package com.techlab.productcrud.service;
 
 import com.techlab.productcrud.entity.Category;
+import com.techlab.productcrud.entity.Product;
 import com.techlab.productcrud.repository.CategoryRepository;
 import com.techlab.productcrud.exception.ResourceNotFoundException;
+import com.techlab.productcrud.dto.CategoryDetailResponseDTO;
 import com.techlab.productcrud.dto.CategoryRequestDTO;
 import com.techlab.productcrud.dto.CategoryResponseDTO;
+import com.techlab.productcrud.dto.ProductSummaryDTO;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +34,22 @@ public class CategoryService {
     return category;
   }
 
+  private ProductSummaryDTO mapToProductSummaryDTO(Product product) {
+    ProductSummaryDTO productSummary = new ProductSummaryDTO(product.getId(), product.getName(), product.getPrice());
+
+    return productSummary;
+  }
+
+  private CategoryDetailResponseDTO mapToCategoryDetailResponseDTO(Category category) {
+    
+    List<ProductSummaryDTO> productSummaryDTOList = category.getProducts().stream().map(this::mapToProductSummaryDTO).toList();
+    
+    CategoryDetailResponseDTO categoryDetailResponseDTO = new CategoryDetailResponseDTO(category.getId(), category.getName(), category.getDescription(), productSummaryDTOList);
+
+    return categoryDetailResponseDTO;
+  }
+
+
   // CRUD METHODS //
 
   public CategoryResponseDTO createCategory(CategoryRequestDTO categoryRequestDTO) {
@@ -49,6 +69,12 @@ public class CategoryService {
     Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
     
     return mapToResponseDTO(category);
+  }
+
+  public CategoryDetailResponseDTO getCategoryDetails(Long id) {
+    Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+    
+    return mapToCategoryDetailResponseDTO(category);
   }
   
   public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO categoryRequestDTO) {
