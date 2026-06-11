@@ -50,11 +50,20 @@ public class ProductService {
     return mapToResponseDTO(savedProduct);
   }
 
-  public Page<ProductResponseDTO> getAllProducts(Pageable pageable) {
-    Page<Product> productPage = productRepository.findAll(pageable);
-    Page<ProductResponseDTO> productResponseDTO = productPage.map(this::mapToResponseDTO);
+  public Page<ProductResponseDTO> getAllProducts(Long categoryId, Pageable pageable) {
+    if(pageable.getPageSize() > 40) throw new IllegalArgumentException("Page size cannot exceed 40");
     
-    return productResponseDTO;
+    Page<Product> productPage;
+    
+    if(categoryId != null) {
+      productPage = productRepository.findByCategoryId(categoryId, pageable);
+    }else {
+      productPage = productRepository.findAll(pageable);
+    }
+
+    Page<ProductResponseDTO> productResponsePage = productPage.map(this::mapToResponseDTO);
+    
+    return productResponsePage;
   }
 
   public ProductResponseDTO getProduct(Long id) {
