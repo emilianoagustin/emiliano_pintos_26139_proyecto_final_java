@@ -1,7 +1,7 @@
 package com.techlab.productcrud.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import com.techlab.productcrud.service.ProductService;
@@ -31,8 +31,8 @@ public class ProductController {
   }
 
   @GetMapping
-  public List<ProductResponseDTO> getAllProducts() {
-    return productService.getAllProducts();
+  public Page<ProductResponseDTO> getAllProducts(Pageable pageable) {
+    return productService.getAllProducts(pageable);
   }
 
   @PutMapping("/{id}")

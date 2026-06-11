@@ -8,8 +8,8 @@ import com.techlab.productcrud.exception.ResourceNotFoundException;
 import com.techlab.productcrud.dto.ProductRequestDTO;
 import com.techlab.productcrud.dto.ProductResponseDTO;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +21,8 @@ public class ProductService {
     this.productRepository = productRepository;
     this.categoryRepository = categoryRepository;
   }
+
+  // DTOs MAPPERS //
 
   private ProductResponseDTO mapToResponseDTO(Product product) {
     return new ProductResponseDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getCategory().getId(), product.getCategory().getName());
@@ -47,14 +49,14 @@ public class ProductService {
     
     return mapToResponseDTO(savedProduct);
   }
-  
-  public List<ProductResponseDTO> getAllProducts() {
-    List<Product> productsList = productRepository.findAll();
-    List<ProductResponseDTO> productResponseDTOList = productsList.stream().map(this::mapToResponseDTO).toList();
+
+  public Page<ProductResponseDTO> getAllProducts(Pageable pageable) {
+    Page<Product> productPage = productRepository.findAll(pageable);
+    Page<ProductResponseDTO> productResponseDTO = productPage.map(this::mapToResponseDTO);
     
-    return productResponseDTOList;
+    return productResponseDTO;
   }
-  
+
   public ProductResponseDTO getProduct(Long id) {
     Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
     return mapToResponseDTO(product);
