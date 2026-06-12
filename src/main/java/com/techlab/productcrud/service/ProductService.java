@@ -8,8 +8,11 @@ import com.techlab.productcrud.exception.ResourceNotFoundException;
 import com.techlab.productcrud.dto.ProductRequestDTO;
 import com.techlab.productcrud.dto.ProductResponseDTO;
 
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +23,18 @@ public class ProductService {
   public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
     this.productRepository = productRepository;
     this.categoryRepository = categoryRepository;
+  }
+
+  private static final Set<String> ALLOWED_SORT_ATTRIBUTES = Set.of("name", "price");
+
+  private static void validatePagination(Pageable pageable) {
+    if(pageable.getPageSize() > 40) throw new IllegalArgumentException("Page size cannot exceed 40");
+    
+    for(Sort.Order order : pageable.getSort()) {
+      if(!ALLOWED_SORT_ATTRIBUTES.contains(order.getProperty())) {
+        throw new IllegalArgumentException("Sort attribute " + order.getProperty() + " is not allowed.");
+      }
+    }
   }
 
   // DTOs MAPPERS //
@@ -51,8 +66,7 @@ public class ProductService {
   }
 
   public Page<ProductResponseDTO> getAllProducts(Long categoryId, Pageable pageable) {
-    if(pageable.getPageSize() > 40) throw new IllegalArgumentException("Page size cannot exceed 40");
-    
+    validatePagination(pageable);
     Page<Product> productPage;
     
     if(categoryId != null) {
