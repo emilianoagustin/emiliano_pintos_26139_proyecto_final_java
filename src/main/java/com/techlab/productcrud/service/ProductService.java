@@ -8,8 +8,11 @@ import com.techlab.productcrud.exception.ResourceNotFoundException;
 import com.techlab.productcrud.dto.ProductRequestDTO;
 import com.techlab.productcrud.dto.ProductResponseDTO;
 
-import java.util.List;
+import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +24,20 @@ public class ProductService {
     this.productRepository = productRepository;
     this.categoryRepository = categoryRepository;
   }
+
+  private static final Set<String> ALLOWED_SORT_ATTRIBUTES = Set.of("name", "price");
+
+  private static void validatePagination(Pageable pageable) {
+    if(pageable.getPageSize() > 40) throw new IllegalArgumentException("Page size cannot exceed 40");
+    
+    for(Sort.Order order : pageable.getSort()) {
+      if(!ALLOWED_SORT_ATTRIBUTES.contains(order.getProperty())) {
+        throw new IllegalArgumentException("Sort attribute " + order.getProperty() + " is not allowed.");
+      }
+    }
+  }
+
+  // DTOs MAPPERS //
 
   private ProductResponseDTO mapToResponseDTO(Product product) {
     return new ProductResponseDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getCategory().getId(), product.getCategory().getName());
@@ -47,14 +64,22 @@ public class ProductService {
     
     return mapToResponseDTO(savedProduct);
   }
-  
-  public List<ProductResponseDTO> getAllProducts() {
-    List<Product> productsList = productRepository.findAll();
-    List<ProductResponseDTO> productResponseDTOList = productsList.stream().map(this::mapToResponseDTO).toList();
+
+  public Page<ProductResponseDTO> getAllProducts(Long categoryId, Pageable pageable) {
+    validatePagination(pageable);
+    Page<Product> productPage;
     
-    return productResponseDTOList;
+    if(categoryId != null) {
+      productPage = productRepository.findByCategoryId(categoryId, pageable);
+    }else {
+      productPage = productRepository.findAll(pageable);
+    }
+
+    Page<ProductResponseDTO> productResponsePage = productPage.map(this::mapToResponseDTO);
+    
+    return productResponsePage;
   }
-  
+
   public ProductResponseDTO getProduct(Long id) {
     Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
     return mapToResponseDTO(product);
