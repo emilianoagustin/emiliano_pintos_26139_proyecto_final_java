@@ -32,8 +32,8 @@ public class ProductController {
   }
 
   @GetMapping
-  public Page<ProductResponseDTO> getAllProducts(@RequestParam(required = false) Long categoryId, @PageableDefault(size = 10) Pageable pageable) {
-    return productService.getAllProducts(categoryId, pageable);
+  public Page<ProductResponseDTO> getAllProducts(@RequestParam(required = false) Long categoryId, @RequestParam(required = false) String name, @PageableDefault(size = 10) Pageable pageable) {
+    return productService.getAllProducts(categoryId, name, pageable);
   }
 
   @PutMapping("/{id}")

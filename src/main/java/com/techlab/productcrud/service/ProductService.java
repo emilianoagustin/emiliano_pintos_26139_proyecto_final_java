@@ -65,13 +65,20 @@ public class ProductService {
     return mapToResponseDTO(savedProduct);
   }
 
-  public Page<ProductResponseDTO> getAllProducts(Long categoryId, Pageable pageable) {
+  public Page<ProductResponseDTO> getAllProducts(Long categoryId, String name, Pageable pageable) {
     validatePagination(pageable);
+
+    boolean hasName = name != null && !name.isBlank();
+    boolean hasCategoryId = categoryId != null;
+
     Page<Product> productPage;
-    
-    if(categoryId != null) {
+    if(hasCategoryId && hasName) {
+      productPage = productRepository.findByCategoryIdAndNameContainingIgnoreCase(categoryId, name, pageable);
+    } else if(!hasCategoryId && hasName) {
+      productPage = productRepository.findByNameContainingIgnoreCase(name, pageable);
+    } else if(hasCategoryId && !hasName) {
       productPage = productRepository.findByCategoryId(categoryId, pageable);
-    }else {
+    } else {
       productPage = productRepository.findAll(pageable);
     }
 
