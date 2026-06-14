@@ -65,11 +65,27 @@ public class ProductService {
     return mapToResponseDTO(savedProduct);
   }
 
-  public Page<ProductResponseDTO> getAllProducts(Long categoryId, String name, Pageable pageable) {
+  public Page<ProductResponseDTO> getAllProducts(Long categoryId, String name, Double minPrice, Double maxPrice, Pageable pageable) {
     validatePagination(pageable);
 
     boolean hasName = name != null && !name.isBlank();
     boolean hasCategoryId = categoryId != null;
+    boolean hasMinPrice = minPrice != null;
+    boolean hasMaxPrice = maxPrice != null;
+
+    if(hasMinPrice != hasMaxPrice) {
+      throw new IllegalArgumentException("minPrice and maxPrice values are required.");
+    }
+    if(hasMinPrice && hasMaxPrice && minPrice > maxPrice) {
+      throw new IllegalArgumentException("minPrice cannot be greater than maxPrice.");
+    }
+    if(hasMinPrice && minPrice < 0) {
+      throw new IllegalArgumentException("minPrice cannot be a negative number.");
+    }
+    if(hasMaxPrice && maxPrice > 5000) {
+      throw new IllegalArgumentException("maxPrice cannot be greater than $5000.");
+    }
+
 
     Page<Product> productPage;
     if(hasCategoryId && hasName) {
@@ -78,7 +94,9 @@ public class ProductService {
       productPage = productRepository.findByNameContainingIgnoreCase(name, pageable);
     } else if(hasCategoryId && !hasName) {
       productPage = productRepository.findByCategoryId(categoryId, pageable);
-    } else {
+    } else if(hasMinPrice && hasMaxPrice){
+      productPage = productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+    }else {
       productPage = productRepository.findAll(pageable);
     }
 
