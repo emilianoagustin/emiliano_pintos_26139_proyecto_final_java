@@ -14,6 +14,9 @@ public class User {
   private String lastName;
   private String email;
 
+  @OneToOne(mappedBy = "user")
+  private Cart cart;
+
   public User(){}
 
   public Long getId() {
@@ -42,5 +45,9 @@ public class User {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public Cart getCart() {
+    return this.cart;
   }
 }
