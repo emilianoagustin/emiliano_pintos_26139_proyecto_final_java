@@ -1,7 +1,10 @@
 package com.techlab.productcrud.service;
 
 import com.techlab.productcrud.entity.User;
+import com.techlab.productcrud.entity.Cart;
 import com.techlab.productcrud.repository.UserRepository;
+import com.techlab.productcrud.repository.CartRepository;
+import com.techlab.productcrud.repository.CartItemRepository;
 import com.techlab.productcrud.dto.UserRequestDTO;
 import com.techlab.productcrud.dto.UserResponseDTO;
 import com.techlab.productcrud.exception.ResourceNotFoundException;
@@ -14,9 +17,13 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final CartRepository cartRepository;
+  private final CartItemRepository cartItemRepository;
 
-  public UserService (UserRepository userRepository) {
+  public UserService (UserRepository userRepository, CartRepository cartRepository, CartItemRepository cartItemRepository) {
     this.userRepository = userRepository;
+    this.cartRepository = cartRepository;
+    this.cartItemRepository = cartItemRepository;
   }
 
   // DTOs MAPPERS //
@@ -66,6 +73,14 @@ public class UserService {
   
   public UserResponseDTO deleteUser(Long id) {
     User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+    Cart cart = cartRepository.findByUserId(id);
+
+    if(cart != null) {
+      user.setCart(null);
+      cartItemRepository.deleteAll(cart.getCartItems());
+      cartRepository.delete(cart);
+    }
+
     userRepository.delete(user);
 
     return mapToResponseDTO(user);
