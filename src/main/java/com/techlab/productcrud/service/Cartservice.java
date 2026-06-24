@@ -85,7 +85,7 @@ public class CartService {
     
     Long cartId = cart.getId();
     cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart not found with ID: " + cartId));
-    
+
     return mapToCartResponseDTO(cart);
   }
   

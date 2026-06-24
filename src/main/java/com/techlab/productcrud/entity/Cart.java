@@ -2,6 +2,7 @@ package com.techlab.productcrud.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class Cart {
   private User user;
 
   @OneToMany(mappedBy = "cart")
-  private List<CartItem> cartItems;
+  private List<CartItem> cartItems = new ArrayList<>();;
 
   public Cart() {}
 
