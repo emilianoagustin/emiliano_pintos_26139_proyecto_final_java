@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class Cartservice {
+public class CartService {
 
   private final CartRepository cartRepository;
   private final CartItemRepository cartItemRepository;
   private final ProductRepository productRepository;
   private final UserRepository userRepository;
 
-  public Cartservice(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductRepository productRepository, UserRepository userRepository) {
+  public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductRepository productRepository, UserRepository userRepository) {
     this.cartRepository = cartRepository;
     this.cartItemRepository = cartItemRepository;
     this.productRepository = productRepository;
