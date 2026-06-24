@@ -50,4 +50,8 @@ public class User {
   public Cart getCart() {
     return this.cart;
   }
+
+  public void setCart(Cart cart) {
+    this.cart = cart;
+  }
 }
