@@ -1,25 +1,26 @@
 package com.techlab.productcrud.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
+
+import java.lang.Double;
 
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "products")
+public class Product {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String name;
-
   private String description;
+  private Double price;
 
-  @OneToMany(mappedBy = "category")
-  private List<Product> products;
+  @ManyToOne
+  @JoinColumn(name = "category_id")
+  private Category category;
 
-  public Category() {
-  }
+  public Product(){}
 
   public Long getId() {
     return this.id;
@@ -41,7 +42,19 @@ public class Category {
     this.description = description;
   }
 
-  public List<Product> getProducts() {
-    return this.products;
+  public Double getPrice() {
+    return this.price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
+
+  public Category getCategory() {
+    return this.category;
+  }
+
+  public void setCategory(Category category) {
+    this.category = category;
   }
 }

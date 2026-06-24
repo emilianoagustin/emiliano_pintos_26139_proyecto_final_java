@@ -1,7 +1,7 @@
 package com.techlab.productcrud.controller;
 
-import com.techlab.productcrud.entity.Category;
 import com.techlab.productcrud.service.CategoryService;
+import com.techlab.productcrud.dto.CategoryDetailResponseDTO;
 import com.techlab.productcrud.dto.CategoryRequestDTO;
 import com.techlab.productcrud.dto.CategoryResponseDTO;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +31,11 @@ public class CategoryController {
   @GetMapping("/{id}")
   public CategoryResponseDTO getCategory(@PathVariable Long id) {
     return categoryService.getCategory(id);
+  }
+
+  @GetMapping("/{id}/details")
+  public CategoryDetailResponseDTO getCategoryDetails(@PathVariable Long id) {
+    return categoryService.getCategoryDetails(id);
   }
 
   @PutMapping("/{id}")
