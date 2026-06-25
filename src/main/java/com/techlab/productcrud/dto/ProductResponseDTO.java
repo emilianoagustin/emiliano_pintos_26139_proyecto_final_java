@@ -6,18 +6,20 @@ public class ProductResponseDTO {
   private String name;
   private String description;
   private Double price;
+  private Integer stock;
 
   private Long categoryId;
   private String categoryName;
 
   public ProductResponseDTO(){}
 
-  public ProductResponseDTO(Long id, String name, String description, Double price, Long categoryId, String categoryName){
+  public ProductResponseDTO(Long id, String name, String description, Double price, Integer stock, Long categoryId, String categoryName){
 
     this.id = id;
     this.name = name;
     this.description = description;
     this.price = price;
+    this.stock = stock;
     this.categoryId = categoryId;
     this.categoryName = categoryName;
   }
@@ -36,6 +38,10 @@ public class ProductResponseDTO {
 
   public Double getPrice() {
     return this.price;
+  }
+
+  public Integer getStock() {
+    return this.stock;
   }
 
   public Long getCategoryId() {

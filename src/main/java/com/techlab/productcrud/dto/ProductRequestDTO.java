@@ -22,6 +22,10 @@ public class ProductRequestDTO {
   @Positive(message = "Price has to be a positive number")
   private Double price;
   
+  @NotNull(message = "Stock cannot be empty")
+  @Positive
+  private Integer stock;
+
   @NotNull(message = "Category ID cannot be empty")
   private Long categoryId;
 
@@ -49,6 +53,14 @@ public class ProductRequestDTO {
 
   public void setPrice(Double price) {
     this.price = price;
+  }
+
+  public Integer getStock() {
+    return this.stock;
+  }
+
+  public void setStock(Integer stock) {
+    this.stock = stock;
   }
 
   public Long getCategoryId() {
