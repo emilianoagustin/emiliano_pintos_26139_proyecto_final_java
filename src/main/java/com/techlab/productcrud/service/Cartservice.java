@@ -56,6 +56,18 @@ public class CartService {
     return cart;
   }
 
+  private Cart getOrCreateCart(User user) {
+    Cart cart = cartRepository.findByUserId(user.getId());
+
+    if(cart == null) {
+      cart = new Cart();
+      cart.setUser(user);
+      cart = cartRepository.save(cart);
+    }
+
+    return cart;
+  }
+
   // DTOs MAPPERS //
 
   private CartResponseDTO mapToCartResponseDTO(Cart cart) {
@@ -78,13 +90,7 @@ public class CartService {
   public CartResponseDTO addItemToCart(Long userId, AddCartItemRequestDTO addCartItemRequestDTO) {
     User user = getUserOrThrow(userId);
 
-    Cart cart = cartRepository.findByUserId(userId);
-
-    if(cart == null) {
-      cart = new Cart();
-      cart.setUser(user);
-      cart = cartRepository.save(cart);
-    }
+    Cart cart = getOrCreateCart(user);
 
     Long productId = addCartItemRequestDTO.getProductId();
     Product product = getProductOrThrow(productId);
