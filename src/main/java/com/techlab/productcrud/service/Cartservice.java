@@ -68,6 +68,23 @@ public class CartService {
     return cart;
   }
 
+  private void addOrUpdateCartItem(Cart cart, Product product, Integer quantity) {
+    Optional<CartItem> cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
+
+    if(cartItem.isEmpty()) {
+      CartItem newCartItem = new CartItem();
+      newCartItem.setCart(cart);
+      newCartItem.setProduct(product);
+      newCartItem.setQuantity(quantity);
+
+      cartItemRepository.save(newCartItem);
+    } else {
+      CartItem existingItem = cartItem.get();
+      existingItem.setQuantity(existingItem.getQuantity() + quantity);
+      cartItemRepository.save(existingItem);
+    }
+  }
+
   // DTOs MAPPERS //
 
   private CartResponseDTO mapToCartResponseDTO(Cart cart) {
@@ -92,23 +109,10 @@ public class CartService {
 
     Cart cart = getOrCreateCart(user);
 
-    Long productId = addCartItemRequestDTO.getProductId();
-    Product product = getProductOrThrow(productId);
+    Product product = getProductOrThrow(addCartItemRequestDTO.getProductId());
     
-    Optional<CartItem> cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId);
-    
-    if(cartItem.isEmpty()) {
-      CartItem newCartItem = new CartItem();
-      newCartItem.setCart(cart);
-      newCartItem.setProduct(product);
-      newCartItem.setQuantity(addCartItemRequestDTO.getQuantity());
-      cartItemRepository.save(newCartItem);
-    } else {
-      CartItem existingItem = cartItem.get();
-      existingItem.setQuantity(existingItem.getQuantity() + addCartItemRequestDTO.getQuantity());
-      cartItemRepository.save(existingItem);
-    }
-    
+    addOrUpdateCartItem(cart, product, addCartItemRequestDTO.getQuantity());
+
     Long cartId = cart.getId();
     cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart not found with ID: " + cartId));
 
