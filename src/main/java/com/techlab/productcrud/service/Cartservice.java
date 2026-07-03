@@ -17,6 +17,7 @@ import com.techlab.productcrud.dto.AddCartItemRequestDTO;
 import com.techlab.productcrud.exception.ResourceNotFoundException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -104,6 +105,7 @@ public class CartService {
 
   // CRUD METHODS //
 
+  @Transactional
   public CartResponseDTO addItemToCart(Long userId, AddCartItemRequestDTO addCartItemRequestDTO) {
     User user = getUserOrThrow(userId);
 
@@ -126,6 +128,7 @@ public class CartService {
     return mapToCartResponseDTO(cart);
   }
   
+  @Transactional
   public CartItemResponseDTO deleteItem(Long userId, Long productId) {
     getUserOrThrow(userId);
     getProductOrThrow(productId);
@@ -139,6 +142,7 @@ public class CartService {
     return cartItemResponseDTO;
   }
   
+  @Transactional
   public CartResponseDTO emptyCart(Long userId) {
     getUserOrThrow(userId);
     Cart cart = getCartOrThrow(userId);
