@@ -36,6 +36,26 @@ public class CartService {
     this.userRepository = userRepository;
   }
 
+  // HELPERS //
+
+  private User getUserOrThrow(Long userId) {
+    return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+  }
+  
+  private Product getProductOrThrow(Long productId) {
+    return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+  }
+
+  private Cart getCartOrThrow(Long userId) {
+    Cart cart = cartRepository.findByUserId(userId);
+
+    if(cart == null) {
+      throw new ResourceNotFoundException("Cart not found for user ID: " + userId);
+    }
+
+    return cart;
+  }
+
   // DTOs MAPPERS //
 
   private CartResponseDTO mapToCartResponseDTO(Cart cart) {
@@ -56,7 +76,7 @@ public class CartService {
   // CRUD METHODS //
 
   public CartResponseDTO addItemToCart(Long userId, AddCartItemRequestDTO addCartItemRequestDTO) {
-    User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+    User user = getUserOrThrow(userId);
 
     Cart cart = cartRepository.findByUserId(userId);
 
@@ -67,7 +87,7 @@ public class CartService {
     }
 
     Long productId = addCartItemRequestDTO.getProductId();
-    Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+    Product product = getProductOrThrow(productId);
     
     Optional<CartItem> cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId);
     
@@ -90,24 +110,18 @@ public class CartService {
   }
   
   public CartResponseDTO getCart(Long userId) {
-    userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-    Cart cart = cartRepository.findByUserId(userId);
-    if(cart == null) {
-      throw new ResourceNotFoundException("Cart not found for user ID: " + userId);
-    }
+    getUserOrThrow(userId);
+    Cart cart = getCartOrThrow(userId);
+
     return mapToCartResponseDTO(cart);
   }
   
   public CartItemResponseDTO deleteItem(Long userId, Long productId) {
-    userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-    productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
-    Cart cart = cartRepository.findByUserId(userId);
-    if(cart == null) {
-      throw new ResourceNotFoundException("Cart not found for user ID: " + userId);
-    }
-    
-    Long cartId = cart.getId();
-    CartItem cartItem = cartItemRepository.findByCartIdAndProductId(cartId, productId).orElseThrow(() -> new ResourceNotFoundException("Cart item not found."));
+    getUserOrThrow(userId);
+    getProductOrThrow(productId);
+    Cart cart = getCartOrThrow(userId);
+
+    CartItem cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId).orElseThrow(() -> new ResourceNotFoundException("Cart item not found."));
     CartItemResponseDTO cartItemResponseDTO = mapToCartItemResponseDTO(cartItem);
     
     cartItemRepository.delete(cartItem);
@@ -116,15 +130,12 @@ public class CartService {
   }
   
   public CartResponseDTO emptyCart(Long userId) {
-    userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-    Cart cart = cartRepository.findByUserId(userId);
-    if(cart == null) {
-      throw new ResourceNotFoundException("Cart not found for user ID: " + userId);
-    }
+    getUserOrThrow(userId);
+    Cart cart = getCartOrThrow(userId);
 
     cartItemRepository.deleteAll(cart.getCartItems());
 
-    cart = cartRepository.findByUserId(userId);
+    cart = getCartOrThrow(userId);
 
     return mapToCartResponseDTO(cart);
   }
