@@ -40,7 +40,7 @@ public class ProductService {
   // DTOs MAPPERS //
 
   private ProductResponseDTO mapToResponseDTO(Product product) {
-    return new ProductResponseDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getCategory().getId(), product.getCategory().getName());
+    return new ProductResponseDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getStock(), product.getImageUrl(), product.getCategory().getId(), product.getCategory().getName());
   }
 
   private Product mapToEntity(ProductRequestDTO productRequestDTO) {
@@ -48,7 +48,8 @@ public class ProductService {
     product.setName(productRequestDTO.getName());
     product.setDescription(productRequestDTO.getDescription());
     product.setPrice(productRequestDTO.getPrice());
-
+    product.setStock(productRequestDTO.getStock());
+    product.setImageUrl(productRequestDTO.getImageUrl());
     Long categoryId = productRequestDTO.getCategoryId();
     Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + categoryId)
     );
@@ -116,6 +117,8 @@ public class ProductService {
     product.setName(productRequestDTO.getName());
     product.setDescription(productRequestDTO.getDescription());
     product.setPrice(productRequestDTO.getPrice());
+    product.setStock(productRequestDTO.getStock());
+    product.setImageUrl(productRequestDTO.getImageUrl());
     
     Long categoryId = productRequestDTO.getCategoryId();
     Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + categoryId)

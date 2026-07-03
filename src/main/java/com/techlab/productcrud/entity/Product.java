@@ -15,6 +15,8 @@ public class Product {
   private String name;
   private String description;
   private Double price;
+  private Integer stock;
+  private String imageUrl;
 
   @ManyToOne
   @JoinColumn(name = "category_id")
@@ -41,15 +43,30 @@ public class Product {
   public void setDescription(String description) {
     this.description = description;
   }
-
+  
   public Double getPrice() {
     return this.price;
   }
-
+  
   public void setPrice(Double price) {
     this.price = price;
   }
+  
+  public Integer getStock() {
+    return this.stock;
+  }
+  
+  public void setStock(Integer stock) {
+    this.stock = stock;
+  }
+  
+  public String getImageUrl() {
+    return this.imageUrl;
+  }
 
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
   public Category getCategory() {
     return this.category;
   }

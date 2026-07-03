@@ -15,13 +15,20 @@ public class ProductRequestDTO {
 
   @NotBlank(message = "Product description is required")
   private String description;
-
+  
   @NotNull(message = "Price cannot be empty")
   @DecimalMax(value = "9999999.99", message = "Price exceeds maximum limit")
   @Digits(integer = 7, fraction = 2, message = "Price format must match up to 7 digits and 2 decimals")
   @Positive(message = "Price has to be a positive number")
   private Double price;
   
+  @NotNull(message = "Stock cannot be empty")
+  @Positive
+  private Integer stock;
+  
+  @NotBlank(message = "Image url is required")
+  private String imageUrl;
+
   @NotNull(message = "Category ID cannot be empty")
   private Long categoryId;
 
@@ -49,6 +56,22 @@ public class ProductRequestDTO {
 
   public void setPrice(Double price) {
     this.price = price;
+  }
+
+  public Integer getStock() {
+    return this.stock;
+  }
+
+  public void setStock(Integer stock) {
+    this.stock = stock;
+  }
+
+  public String getImageUrl() {
+    return this.imageUrl;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 
   public Long getCategoryId() {
