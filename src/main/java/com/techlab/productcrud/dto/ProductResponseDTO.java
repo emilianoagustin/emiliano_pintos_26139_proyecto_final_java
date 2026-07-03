@@ -46,7 +46,7 @@ public class ProductResponseDTO {
     return this.stock;
   }
 
-  public String getImage() {
+  public String getImageUrl() {
     return this.imageUrl;
   }
 

@@ -60,11 +60,11 @@ public class Product {
     this.stock = stock;
   }
   
-  public String getImage() {
+  public String getImageUrl() {
     return this.imageUrl;
   }
 
-  public void setImage(String imageUrl) {
+  public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
   }
   public Category getCategory() {
